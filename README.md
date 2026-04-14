@@ -2,6 +2,8 @@
 
 FITRON is a Python package for hybrid decision intelligence under uncertainty.
 
+Current release: `1.0.0`
+
 The package combines:
 
 - fuzzy feature transformation,
@@ -12,6 +14,22 @@ The package combines:
 
 Package name on PyPI: `fitron`  
 Import path: `fitron`
+
+## What FITRON Supports
+
+FITRON is designed for generic tabular decision problems where the target is binary and the feature space contains a mix of numeric and categorical variables.
+
+It is a good fit when:
+
+- the target can be encoded as 0/1, yes/no, true/false, approved/rejected, or another binary pair,
+- the data contains structured rows with feature columns that can be normalized, encoded, and ranked,
+- the goal is not only prediction, but also interpretable candidate ranking.
+
+It is not a fit for:
+
+- multi-class targets without adaptation,
+- unstructured text or image-only problems,
+- tasks where row-level ranking is not meaningful.
 
 ## Why FITRON
 
@@ -124,7 +142,7 @@ Notes:
 
 ```python
 import pandas as pd
-from fitron import FITRONModel
+from fitron import FITRONModel, fit
 
 sample = pd.DataFrame(
     {
@@ -143,6 +161,16 @@ print("Best score:", result.best_score)
 print("Explanation:", result.explanation)
 ```
 
+You can also pass binary string targets and explicit label mappings:
+
+```python
+result = fit(
+    df,
+    target="status",
+    target_map={"reject": 0, "approve": 1},
+)
+```
+
 ## Public API
 
 - `FITRONModel`
@@ -159,23 +187,47 @@ pytest -q
 
 ## Build and Publish
 
-Build distribution artifacts:
+Release notes and version history are tracked in [CHANGELOG.md](CHANGELOG.md).
+
+### Update flow for PyPI
+
+1. Update the version in [pyproject.toml](pyproject.toml).
+2. Update [CHANGELOG.md](CHANGELOG.md) with the release summary.
+3. Run the test suite:
+
+```bash
+pytest -q
+```
+
+4. Build the package:
 
 ```bash
 python -m build
 ```
 
-Validate artifacts:
+5. Verify the generated distributions:
 
 ```bash
 python -m twine check dist/*
 ```
 
-Upload:
+6. Upload to TestPyPI first:
 
 ```bash
 python -m twine upload --repository testpypi dist/*
+```
+
+7. Confirm the package installs from TestPyPI, then upload to the real PyPI index:
+
+```bash
 python -m twine upload dist/*
+```
+
+8. Tag the release in git so the published version is easy to trace:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
 ## Project Structure

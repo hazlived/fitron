@@ -12,10 +12,31 @@ def fit(
     target: str,
     iterations: int = 20,
     random_state: int = 42,
+    decision_threshold: float = 0.5,
+    objective_classification_weight: float = 0.65,
+    confidence_floor: float = 0.55,
     drop_columns: list[str] | None = None,
+    criterion_types: list[str] | None = None,
+    expected_feature_columns: list[str] | None = None,
+    metrics_output_path: str | None = None,
+    target_map: dict[str, int] | None = None,
 ) -> IterationResult:
-    model = FITRONModel(iterations=iterations, random_state=random_state)
-    return model.fit(df=df, target=target, drop_columns=drop_columns)
+    model = FITRONModel(
+        iterations=iterations,
+        random_state=random_state,
+        decision_threshold=decision_threshold,
+        objective_classification_weight=objective_classification_weight,
+        confidence_floor=confidence_floor,
+    )
+    return model.fit(
+        df=df,
+        target=target,
+        drop_columns=drop_columns,
+        criterion_types=criterion_types,
+        expected_feature_columns=expected_feature_columns,
+        metrics_output_path=metrics_output_path,
+        target_map=target_map,
+    )
 
 
 def rank(
@@ -24,7 +45,14 @@ def rank(
     weights: np.ndarray | None = None,
     memory: Memory | None = None,
     random_state: int = 42,
+    decision_threshold: float = 0.5,
+    objective_classification_weight: float = 0.65,
+    confidence_floor: float = 0.55,
     drop_columns: list[str] | None = None,
+    criterion_types: list[str] | None = None,
+    expected_feature_columns: list[str] | None = None,
+    tune_hyperparameters: bool = False,
+    target_map: dict[str, int] | None = None,
 ) -> IterationResult:
     return run_iteration(
         df=df,
@@ -33,6 +61,13 @@ def rank(
         memory=memory,
         random_state=random_state,
         drop_columns=drop_columns,
+        criterion_types=criterion_types,
+        decision_threshold=decision_threshold,
+        objective_classification_weight=objective_classification_weight,
+        confidence_floor=confidence_floor,
+        expected_feature_columns=expected_feature_columns,
+        tune_hyperparameters=tune_hyperparameters,
+        target_map=target_map,
     )
 
 
