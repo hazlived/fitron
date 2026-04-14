@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fitron"
-version = "0.1.2"
+version = "0.1.3"
 description = "FITRON: adaptive fuzzy-tree MCDM decision engine"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -14,9 +14,9 @@ authors = [
   { name = "hazlived" }
 ]
 dependencies = [
-  "numpy>=1.26.4,<2.0",
-  "pandas>=2.1,<2.3",
-  "scikit-learn>=1.4,<1.6"
+  "numpy>=1.26.4",
+  "pandas>=2.1",
+  "scikit-learn>=1.4"
 ]
 keywords = ["fitron", "fuzzy", "decision-tree", "mcdm", "topsis", "adaptive"]
 classifiers = [

@@ -11,7 +11,7 @@ The package combines:
 - interpretable ranking outputs.
 
 Package name on PyPI: `fitron`  
-Import path: `pip_model`
+Import path: `fitron`
 
 ## Why FITRON
 
@@ -79,11 +79,52 @@ python -m pip install -U pip setuptools wheel
 python -m pip install -e .[dev]
 ```
 
+More detailed setup for Linux/macOS:
+
+1. Confirm Python 3.10+ is available:
+
+```bash
+python3 --version
+```
+
+2. If `venv` is missing on Linux, install it first (example for Debian/Ubuntu):
+
+```bash
+sudo apt update
+sudo apt install -y python3-venv
+```
+
+3. Create and activate the virtual environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+4. Upgrade packaging tools and install FITRON in editable mode:
+
+```bash
+python -m pip install -U pip setuptools wheel
+python -m pip install -e .[dev]
+```
+
+5. Verify installation:
+
+```bash
+python -c "from fitron import FITRONModel; print('ok')"
+pytest -q
+```
+
+Notes:
+
+- On some macOS setups, `python3` may be installed via Homebrew and located under `/opt/homebrew/bin/python3` (Apple Silicon) or `/usr/local/bin/python3` (Intel).
+- Use `deactivate` when you are done working in the virtual environment.
+
 ## Quick Start
 
 ```python
 import pandas as pd
-from pip_model import FITRONModel
+from fitron import FITRONModel
 
 sample = pd.DataFrame(
     {
