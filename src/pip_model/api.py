@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 from .core.memory import Memory
-from .pipeline import IterationResult, TRACEModel, run_iteration
+from .pipeline import FITRONModel, IterationResult, run_iteration
 
 
 def fit(
@@ -14,7 +14,7 @@ def fit(
     random_state: int = 42,
     drop_columns: list[str] | None = None,
 ) -> IterationResult:
-    model = TRACEModel(iterations=iterations, random_state=random_state)
+    model = FITRONModel(iterations=iterations, random_state=random_state)
     return model.fit(df=df, target=target, drop_columns=drop_columns)
 
 

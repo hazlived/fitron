@@ -1,6 +1,6 @@
-# TRACE
+# FITRON
 
-TRACE (Tree-based Ranking with Adaptive Criteria Evolution) is a Python package for hybrid decision intelligence under uncertainty.
+FITRON is a Python package for hybrid decision intelligence under uncertainty.
 
 The package combines:
 
@@ -10,12 +10,12 @@ The package combines:
 - memory-guided adaptive weight updates,
 - interpretable ranking outputs.
 
-Package name on PyPI: `trace`  
+Package name on PyPI: `fitron`  
 Import path: `pip_model`
 
-## Why TRACE
+## Why FITRON
 
-Most pipelines stop at classification. TRACE extends that flow into adaptive decision ranking.
+Most pipelines stop at classification. FITRON extends that flow into adaptive decision ranking.
 
 1. Learns a predictive backbone with a decision tree.
 2. Ranks valid candidates with TOPSIS and learned criteria weights.
@@ -37,7 +37,7 @@ Most pipelines stop at classification. TRACE extends that flow into adaptive dec
 ### End users
 
 ```bash
-pip install trace
+pip install fitron
 ```
 
 ### From source
@@ -83,7 +83,7 @@ python -m pip install -e .[dev]
 
 ```python
 import pandas as pd
-from pip_model import TRACEModel
+from pip_model import FITRONModel
 
 sample = pd.DataFrame(
     {
@@ -94,7 +94,7 @@ sample = pd.DataFrame(
     }
 )
 
-model = TRACEModel(iterations=5, random_state=42)
+model = FITRONModel(iterations=5, random_state=42)
 result = model.fit(sample, target="target")
 
 print("Best index:", result.best_index)
@@ -104,7 +104,7 @@ print("Explanation:", result.explanation)
 
 ## Public API
 
-- `TRACEModel`
+- `FITRONModel`
 - `fit(df, target, ...)`
 - `rank(df, target, ...)`
 - `explain(result)`

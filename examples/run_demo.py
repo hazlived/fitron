@@ -1,6 +1,6 @@
 import pandas as pd
 
-from pip_model import TRACEModel
+from pip_model import FITRONModel
 
 
 df = pd.DataFrame(
@@ -13,7 +13,7 @@ df = pd.DataFrame(
     }
 )
 
-model = TRACEModel(iterations=5, random_state=42)
+model = FITRONModel(iterations=5, random_state=42)
 result = model.fit(df, target="target")
 
 print("Best index:", result.best_index)

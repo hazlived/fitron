@@ -1,9 +1,9 @@
 from .api import explain, fit, rank, update_memory
-from .pipeline import IterationResult, TRACEModel
+from .pipeline import IterationResult, FITRONModel
 from .core.memory import Memory
 
 __all__ = [
-    "TRACEModel",
+    "FITRONModel",
     "IterationResult",
     "Memory",
     "fit",

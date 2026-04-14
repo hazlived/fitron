@@ -153,7 +153,7 @@ def run_iteration(
     )
 
 
-class TRACEModel:
+class FITRONModel:
     def __init__(self, iterations: int = 20, random_state: int = 42) -> None:
         self.iterations = iterations
         self.random_state = random_state

@@ -3,9 +3,9 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "trace"
-version = "0.1.1"
-description = "TRACE (Tree-based Ranking with Adaptive Criteria Evolution): adaptive fuzzy-tree MCDM decision engine"
+name = "fitron"
+version = "0.1.2"
+description = "FITRON: adaptive fuzzy-tree MCDM decision engine"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
@@ -18,7 +18,7 @@ dependencies = [
   "pandas>=2.1,<2.3",
   "scikit-learn>=1.4,<1.6"
 ]
-keywords = ["trace", "fuzzy", "decision-tree", "mcdm", "topsis", "adaptive"]
+keywords = ["fitron", "fuzzy", "decision-tree", "mcdm", "topsis", "adaptive"]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
@@ -34,8 +34,8 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://example.com/trace"
-Issues = "https://example.com/trace/issues"
+Homepage = "https://github.com/hazlived/fitron"
+Issues = "https://github.com/hazlived/fitron/issues"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

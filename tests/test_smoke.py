@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from pip_model import Memory, TRACEModel, rank, update_memory
+from pip_model import FITRONModel, Memory, rank, update_memory
 
 
 def _sample_df() -> pd.DataFrame:
@@ -18,7 +18,7 @@ def _sample_df() -> pd.DataFrame:
 
 def test_model_fit_returns_result() -> None:
     df = _sample_df()
-    model = TRACEModel(iterations=3, random_state=7)
+    model = FITRONModel(iterations=3, random_state=7)
     result = model.fit(df, target="target")
 
     assert isinstance(result.best_index, int)
