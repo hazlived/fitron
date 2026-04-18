@@ -678,62 +678,8 @@ model = FITRONModel(iterations=10, random_state=42)
 pytest -q
 ```
 
-## Build and Publish
 
 Release notes and version history are tracked in [CHANGELOG.md](CHANGELOG.md).
-
-### Update flow for PyPI
-
-1. Update the version in [pyproject.toml](pyproject.toml).
-2. Update [CHANGELOG.md](CHANGELOG.md) with the release summary.
-3. Run the test suite:
-
-```bash
-pytest -q
-```
-
-4. Build the package:
-
-```bash
-python -m build
-```
-
-5. Verify the generated distributions:
-
-```bash
-python -m twine check dist/*
-```
-
-6. Upload to TestPyPI first:
-
-```bash
-python -m twine upload --repository testpypi dist/*
-```
-
-7. Confirm the package installs from TestPyPI, then upload to the real PyPI index:
-
-```bash
-python -m twine upload dist/*
-```
-
-8. Tag the release in git so the published version is easy to trace:
-
-```bash
-git tag v1.0.0
-git push origin v1.0.0
-```
-
-## Project Structure
-
-```text
-src/pip_model/
-  core/
-  api.py
-  pipeline.py
-tests/
-examples/
-pyproject.toml
-```
 
 ## Authors
 
