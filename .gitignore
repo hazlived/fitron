@@ -16,3 +16,4 @@ htmlcov/
 .tox/
 .nox/
 .ipynb_checkpoints/
+comparison/

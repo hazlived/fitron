@@ -1,11 +1,35 @@
 from __future__ import annotations
 
+import os
+
 import numpy as np
 import pandas as pd
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.metrics import average_precision_score, balanced_accuracy_score, f1_score, roc_auc_score
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
 from sklearn.tree import DecisionTreeClassifier
+
+try:
+    from xgboost import DMatrix, XGBClassifier
+except Exception:  # pragma: no cover
+    DMatrix = None
+    XGBClassifier = None
+
+
+def _can_use_gpu() -> bool:
+    flag = os.environ.get("FITRON_USE_GPU", "1").strip().lower()
+    if flag in {"0", "false", "no", "off"}:
+        return False
+
+    if XGBClassifier is None:
+        return False
+
+    try:
+        import torch
+
+        return bool(torch.cuda.is_available())
+    except Exception:
+        return False
 
 
 def train_decision_tree(
@@ -16,6 +40,26 @@ def train_decision_tree(
     random_state: int = 42,
     tune_hyperparameters: bool = True,
 ) -> tuple[object, np.ndarray]:
+    # Large CICIDS-style jobs are faster and more stable on a GPU-backed tree model.
+    if _can_use_gpu() and len(X) >= 50000:
+        gpu_model = XGBClassifier(
+            n_estimators=120,
+            max_depth=max_depth if max_depth is not None else 6,
+            learning_rate=0.08,
+            subsample=0.85,
+            colsample_bytree=0.85,
+            objective="binary:logistic",
+            eval_metric="logloss",
+            tree_method="hist",
+            device="cuda",
+            random_state=random_state,
+            n_jobs=1,
+            reg_lambda=1.0,
+        )
+        gpu_model.fit(X, y)
+        importances = np.asarray(gpu_model.feature_importances_, dtype=float).copy()
+        return gpu_model, importances
+
     base = DecisionTreeClassifier(random_state=random_state)
 
     if not tune_hyperparameters:
@@ -78,6 +122,21 @@ def predict(model: object, X: pd.DataFrame, threshold: float = 0.5) -> np.ndarra
 
 
 def predict_proba_positive(model: object, X: pd.DataFrame) -> np.ndarray:
+    # Avoid sklearn-wrapper inplace_predict fallback warnings for XGBoost models.
+    if DMatrix is not None and hasattr(model, "get_booster"):
+        try:
+            data = X.to_numpy(dtype=np.float32, copy=False)
+            booster = model.get_booster()
+            proba = booster.predict(DMatrix(data), validate_features=False)
+            proba = np.asarray(proba, dtype=float)
+            if proba.ndim == 1:
+                return np.clip(proba, 0.0, 1.0)
+            if proba.ndim == 2 and proba.shape[1] > 1:
+                return np.clip(proba[:, 1], 0.0, 1.0)
+        except Exception:
+            # Fall back to standard estimator prediction path.
+            pass
+
     proba = model.predict_proba(X)
     if proba.shape[1] == 1:
         return np.ones(len(X), dtype=float)
