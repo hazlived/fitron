@@ -9,7 +9,7 @@ FITRON is a Python library for ranking-first decision intelligence on tabular bi
 
 Instead of stopping at yes/no prediction, FITRON combines classification quality and multi-criteria ranking so you can prioritize records with interpretable, feature-level explanations.
 
-Current release: `1.0.2`
+Current release: `1.0.3`
 
 - PyPI: https://pypi.org/project/fitron/
 - Repository: https://github.com/hazlived/fitron
