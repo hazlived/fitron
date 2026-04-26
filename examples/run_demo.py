@@ -1,6 +1,6 @@
 import pandas as pd
 
-from pip_model import FITRONModel
+from fitron import FITRONModel
 
 
 df = pd.DataFrame(
