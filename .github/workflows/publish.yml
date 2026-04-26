@@ -8,20 +8,49 @@ on:
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     permissions:
       id-token: write
       contents: read
+      attestations: write
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
+
+      - name: Validate release tag matches package version
+        if: github.event_name == 'release'
+        run: |
+          python - <<'PY'
+          import sys
+          import pathlib
+
+          if sys.version_info >= (3, 11):
+            import tomllib
+          else:
+            import tomli as tomllib
+
+          tag = "${{ github.event.release.tag_name }}".strip()
+          if tag.startswith("refs/tags/"):
+            tag = tag.split("/", 2)[-1]
+          if tag.startswith("v"):
+            tag = tag[1:]
+
+          data = tomllib.loads(pathlib.Path("pyproject.toml").read_text(encoding="utf-8"))
+          version = data["project"]["version"].strip()
+
+          if tag != version:
+            raise SystemExit(
+              f"Release tag version ({tag}) does not match pyproject version ({version}). "
+              "Update pyproject.toml and retag the release."
+            )
+
+          print(f"Version check passed: tag {tag} matches pyproject {version}")
+          PY
 
       - name: Build distributions
         run: |
