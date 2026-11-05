@@ -9,7 +9,7 @@ FITRON is a Python library for ranking-first decision intelligence on tabular bi
 
 Instead of stopping at yes/no prediction, FITRON combines classification quality and multi-criteria ranking so you can prioritize records with interpretable, feature-level explanations.
 
-Current release: `1.0.3`
+Current release: `1.1.0`
 
 - PyPI: https://pypi.org/project/fitron/
 - Repository: https://github.com/hazlived/fitron
@@ -18,6 +18,7 @@ Current release: `1.0.3`
 
 - [Why FITRON](#why-fitron)
 - [Key Features](#key-features)
+- [Theoretical Foundations & Guarantees](#theoretical-foundations--guarantees)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [Core API](#core-api)
@@ -41,12 +42,22 @@ FITRON integrates:
 
 ## Key Features
 
-- Ranking-first output with best-candidate selection and scored alternatives.
-- Interpretable explanations tied to high-impact transformed features.
-- Native support for binary labels as numeric or string values.
-- Flexible API: class-based workflow and functional shortcuts.
-- Iteration metrics export for reproducibility and analysis.
-- Practical deployment safeguards such as confidence floor fallback.
+- **Ranking-first Decision Intelligence**: Operational candidate prioritization combining calibrated class confidence with multi-criteria MCDM utility.
+- **Provable Simplex Optimization**: Exact $\mathcal{O}(m \log m)$ Euclidean projection onto probability simplex $\Delta^{m-1}$, replacing unconstrained heuristic search.
+- **Strict Ruspini Quantile Partitions**: Proved partition-of-unity completeness ($\sum \mu_k(x) \equiv 1.0$) with indicator handling for categorical and discrete features.
+- **Vectorized Bounded TOPSIS**: Relative closeness scores mathematically bounded in $[0, 1]$ with global data-driven criteria orientation.
+- **Adaptive Memory & Concept Drift Tracking**: A-EWMA criteria weighting with Wasserstein-1 drift distance and recency decay.
+- **Interpretable Explanations**: Transparent feature-level contribution metrics mapping directly back to original business attributes.
+- **Practical Deployment Safeguards**: Dynamic confidence-floor fallback, Platt/Isotonic calibration, and automated balanced accuracy threshold tuning.
+
+## Theoretical Foundations & Guarantees
+
+FITRON is underpinned by four rigorous mathematical theorems:
+
+1. **Theorem 1 (Resolution of Ranking Degeneracy)**: Demonstrates that under homogeneous positive candidate slices ($y_i = 1$), binary NDCG and AP yield zero gradient ($\\nabla_{\\mathbf{w}} Q_{rank} = \\mathbf{0}$). FITRON introduces **Graded Operational Ground-Truth Utility** $g_i = y_i \\cdot \\psi(\\mathbf{u}_i)$ (where $\\psi$ measures real-world impact such as financial loss exposure, CVSS severity, or machine downtime), recovering strictly monotonic ranking gradients.
+2. **Theorem 2 (Ruspini Fuzzy Partition Completeness)**: Formulates quantile membership functions $\\mu_{low}, \\mu_{mid}, \\mu_{high}$ and proves $\\sum_{k \\in \\{low, mid, high\\}} \\mu_k(x) = 1.0$ for all $x \\in \\mathbb{R}$. Features with degenerate quantile knots ($q_{25} = q_{75}$) are handled via exact indicator functions.
+3. **Theorem 3 (TOPSIS Boundedness)**: Proves that for all normalized fuzzy decision matrices, the relative closeness score $C_i = \\frac{D_i^-}{D_i^+ + D_i^-}$ is strictly bounded within $[0, 1]$ and reaches extremities only on ideal or anti-ideal alternatives.
+4. **Theorem 4 (Exact Euclidean Simplex Projection)**: Guarantees that weight updates are projected exactly onto the standard probability simplex $\\Delta^{m-1} = \\{\\mathbf{w} \\in \\mathbb{R}^m : \\sum w_j = 1, w_j \\ge 0\\}$ in $\\mathcal{O}(m \\log m)$ time using the Michelot-Duchi projection algorithm.
 
 ## Installation
 

@@ -14,7 +14,10 @@ from pip_model.core.reward import (
 )
 from pip_model.pipeline import _optimize_weights, _select_candidate_rows
 
+__version__ = "1.1.0"
+
 __all__ = [
+    "__version__",
     "FITRONModel",
     "IterationResult",
     "Memory",
