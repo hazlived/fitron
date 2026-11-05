@@ -6,6 +6,26 @@ import numpy as np
 import pandas as pd
 
 
+def sanitize_column_names(columns: Sequence[str]) -> list[str]:
+    """Sanitize column names for compatibility with XGBoost, LightGBM, and scikit-learn.
+
+    Removes forbidden characters: [, ], <, >, commas, and whitespace.
+    """
+    clean_cols = []
+    for c in columns:
+        clean = (
+            str(c)
+            .replace("[", "_")
+            .replace("]", "_")
+            .replace("<", "lt_")
+            .replace(">", "gt_")
+            .replace(" ", "_")
+            .replace(",", "_")
+        )
+        clean_cols.append(clean)
+    return clean_cols
+
+
 def preprocess_data(
     df: pd.DataFrame,
     target: str,
@@ -56,7 +76,7 @@ def preprocess_data(
     if drop_columns:
         X = X.drop(columns=list(drop_columns), errors="ignore")
 
-    auto_drop: list[str] = []
+    auto_drop = []
     row_count = len(X)
     for col in X.columns:
         if not (X[col].dtype == "object" or str(X[col].dtype).startswith("category")):
@@ -77,13 +97,13 @@ def preprocess_data(
 
         numeric = pd.to_numeric(X[col], errors="coerce")
         numeric_ratio = float(numeric.notnull().mean())
-
         if numeric_ratio >= 0.8:
             X[col] = numeric.fillna(float(numeric.median()))
         else:
             X[col] = X[col].astype(str).replace({"nan": np.nan}).fillna("__missing__")
 
     X = pd.get_dummies(X, dtype=float)
+    X.columns = sanitize_column_names(X.columns)
     X = X.astype(float)
 
     return X, y.astype(int)
